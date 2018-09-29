@@ -1,1 +1,1 @@
-# GreaseMonkeyScripts
+# javascripts
