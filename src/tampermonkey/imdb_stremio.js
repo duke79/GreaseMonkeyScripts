@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IMDB to Stremio
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  try to take over the world!
 // @author       You
 // @match        https://www.imdb.com/*
@@ -42,7 +42,10 @@
     visibility: visible;
   }
   </style>`;
-  const tooltip = (link) => `<a class="tooltiptext" href="${link}">Open in Stremio</a>`;
+  const tooltip = (stremioLink, youtubeLink) => `<div class="tooltiptext">
+    <a href="${stremioLink}">Watch in Stremio</a>
+    <a href="${youtubeLink}" target="_blank ">Trailer in Youtube</a>
+  </div>`;
   document.querySelector('body').innerHTML = style + document.querySelector('body').innerHTML;
   document.querySelectorAll('a[href*="/title/"]').forEach((a) => {
     const imdbId = /.*\/title\/([a-zA-Z0-9]*).*/.exec(a.href)[1];
@@ -50,7 +53,8 @@
       const stremioLink = `stremio://detail/movie/` + imdbId + "/" + imdbId;
       if (a.parentElement && a.parentElement.localName === 'h3') {
           a.parentElement.classList.add('tooltip');
-          a.parentElement.innerHTML = a.parentElement.innerHTML + tooltip(stremioLink);
+          const youtubeLink = `https://www.youtube.com/results?search_query=${a.parentElement.innerText}+trailer`;
+          a.parentElement.innerHTML = a.parentElement.innerHTML + tooltip(stremioLink, youtubeLink);
           // console.log(a.parentElement.localName, a.parentElement.nodeName);
       }
     }
